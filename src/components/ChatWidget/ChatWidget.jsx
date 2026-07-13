@@ -1,0 +1,177 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { RiRobot3Fill } from 'react-icons/ri';
+
+const rawBaseUrl = process.env.REACT_APP_CHATBOT_BASE_URL;
+const rawWebsiteSlug = process.env.REACT_APP_CHATBOT_WEBSITE_SLUG;
+
+function getChatUrl() {
+  const baseUrl = rawBaseUrl?.trim().replace(/\/+$/, '');
+  const websiteSlug = rawWebsiteSlug?.trim();
+
+  if (!baseUrl || !websiteSlug) {
+    return null;
+  }
+
+  try {
+    const parsedBaseUrl = new URL(baseUrl);
+
+    if (!['http:', 'https:'].includes(parsedBaseUrl.protocol)) {
+      return null;
+    }
+
+    return `${parsedBaseUrl.href.replace(/\/+$/, '')}/${encodeURIComponent(websiteSlug)}/chat?embed=true`;
+  } catch {
+    return null;
+  }
+}
+
+function ChatIcon() {
+  return <RiRobot3Fill aria-hidden="true" size={28} />;
+}
+
+function CloseIcon() {
+  return (
+    <svg
+      className="fill-none stroke-current [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:1.8]"
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width="26"
+      height="26"
+    >
+      <path d="m6 6 12 12M18 6 6 18" />
+    </svg>
+  );
+}
+
+export default function ChatWidget() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasOpened, setHasOpened] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasLoadError, setHasLoadError] = useState(false);
+  const chatUrl = useMemo(getChatUrl, []);
+
+  useEffect(() => {
+    if (!chatUrl && process.env.NODE_ENV !== 'production') {
+      console.error(
+        'ChatWidget: missing or invalid chatbot configuration. Set REACT_APP_CHATBOT_BASE_URL and REACT_APP_CHATBOT_WEBSITE_SLUG.',
+      );
+    }
+  }, [chatUrl]);
+
+  if (!chatUrl) {
+    return null;
+  }
+
+  const toggleWidget = () => {
+    if (!isOpen) {
+      setHasOpened(true);
+    }
+
+    setIsOpen((open) => !open);
+  };
+
+  const closeWidget = () => setIsOpen(false);
+
+  return (
+    <aside
+      className="fixed bottom-6 right-6 z-[99999] font-ibm text-left text-[#17131f] max-[599px]:bottom-3 max-[599px]:right-3"
+      aria-label="Website chatbot"
+    >
+      {hasOpened && (
+        <section
+          id="website-chatbot-dialog"
+          className={`absolute bottom-[76px] right-0 flex h-[600px] max-h-[calc(100vh-124px)] w-[390px] origin-bottom-right flex-col overflow-hidden rounded-[20px] border border-[#1f182c17] bg-white shadow-[0_22px_60px_rgba(0,0,0,0.28)] transition-[opacity,transform,visibility] duration-200 motion-reduce:transition-none max-[599px]:fixed max-[599px]:bottom-[84px] max-[599px]:left-3 max-[599px]:right-3 max-[599px]:top-3 max-[599px]:h-auto max-[599px]:max-h-none max-[599px]:w-auto max-[599px]:rounded-[18px] ${
+            isOpen
+              ? 'visible translate-y-0 scale-100 opacity-100 pointer-events-auto'
+              : 'invisible translate-y-4 scale-[0.97] opacity-0 pointer-events-none'
+          }`}
+          role="dialog"
+          aria-modal="false"
+          aria-label="Website Assistant"
+          aria-hidden={!isOpen}
+        >
+          <header className="flex min-h-[74px] items-center justify-between border-b border-[#eeeaf4] bg-white py-[13px] pl-4 pr-[14px]">
+            <div className="flex items-center gap-[11px]">
+              <span
+                className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-[#f0e7ff] text-[#7f36ec] [&_svg]:h-[22px] [&_svg]:w-[22px]"
+                aria-hidden="true"
+              >
+                <ChatIcon />
+              </span>
+              <div>
+                <h2 className="mb-0.5 text-base font-semibold leading-tight text-[#17131f]">
+                  Website Assistant
+                </h2>
+                <p className="m-0 flex items-center gap-1.5 text-xs leading-[1.4] text-[#6e6877]">
+                  <span
+                    className="h-2 w-2 rounded-full bg-[#28b76b] shadow-[0_0_0_3px_rgba(40,183,107,0.14)]"
+                    aria-hidden="true"
+                  />
+                  Online
+                </p>
+              </div>
+            </div>
+            <button
+              className="flex h-[38px] w-[38px] cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-[#625b6c] transition-colors hover:bg-[#f3eff7] hover:text-[#1d1725] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#b79af3bf]"
+              type="button"
+              onClick={closeWidget}
+              aria-label="Close chatbot"
+            >
+              <CloseIcon />
+            </button>
+          </header>
+
+          <div className="relative min-h-0 flex-1 overflow-hidden bg-white">
+            {!isLoaded && !hasLoadError && (
+              <div
+                className="absolute inset-0 z-[1] flex items-center justify-center gap-2.5 p-6 text-center text-sm text-[#655d70]"
+                role="status"
+              >
+                <span
+                  className="h-[18px] w-[18px] animate-spin rounded-full border-2 border-[#ded5e9] border-t-[#7f36ec] motion-reduce:animate-[spin_1.4s_linear_infinite]"
+                  aria-hidden="true"
+                />
+                Loading assistant…
+              </div>
+            )}
+            {hasLoadError && (
+              <div
+                className="absolute inset-0 z-[1] flex items-center justify-center gap-2.5 p-6 text-center text-sm text-[#a43a43]"
+                role="alert"
+              >
+                The assistant could not be loaded. Please close it and try again.
+              </div>
+            )}
+            <iframe
+              className={`block h-full w-full border-0 transition-opacity duration-200 motion-reduce:transition-none ${
+                isLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              src={chatUrl}
+              title="Website chatbot"
+              allow="clipboard-write"
+              onLoad={() => {
+                setIsLoaded(true);
+                setHasLoadError(false);
+              }}
+              onError={() => {
+                setIsLoaded(false);
+                setHasLoadError(true);
+              }}
+            />
+          </div>
+        </section>
+      )}
+
+      <button
+        className="ml-auto flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full border-0 bg-gradient-to-br from-[#8e49f5] to-[#6822d2] text-white shadow-[0_12px_30px_rgba(74,23,148,0.42)] transition-[transform,box-shadow] duration-150 hover:-translate-y-0.5 hover:shadow-[0_15px_34px_rgba(74,23,148,0.5)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#b79af3bf] motion-reduce:transition-none"
+        type="button"
+        onClick={toggleWidget}
+        aria-label={isOpen ? 'Close chatbot' : 'Open chatbot'}
+        aria-expanded={isOpen}
+        aria-controls="website-chatbot-dialog"
+      >
+        {isOpen ? <CloseIcon /> : <ChatIcon />}
+      </button>
+    </aside>
+  );
+}

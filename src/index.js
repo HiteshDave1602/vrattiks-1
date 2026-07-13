@@ -2,26 +2,32 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import Home from './pages/home/Home';
 import Aboutus from './pages/company/Aboutus';
 import Contact from './pages/contact/Contact';
+import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 let allRoutes = createBrowserRouter(
   [
     {
-      path: '/',
-      element: <Home />
-    },
-    {
-      path: 'about',
-      element: <Aboutus />
-    },
-    {
-      path: 'contact',
-      element: <Contact/>
+      element: <App><Outlet /></App>,
+      children: [
+        {
+          path: '/',
+          element: <Home />
+        },
+        {
+          path: 'about',
+          element: <Aboutus />
+        },
+        {
+          path: 'contact',
+          element: <Contact/>
+        }
+      ]
     }
   ]
 )
