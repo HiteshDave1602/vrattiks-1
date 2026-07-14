@@ -1,13 +1,11 @@
-// import logo from './logo.svg';
 import './App.css';
-import Home from '../src/pages/home/Home'
-import IntroductionSpeech from './components/IntroductionSpeech';
+import ChatWidget from './components/ChatWidget/ChatWidget';
 
-function App() {
+function App({ children }) {
   return (
     <div className="App">
-      <Home />
-      <IntroductionSpeech/>
+      {children}
+      <ChatWidget />
     </div>
   );
 }
