@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { RiRobot3Fill } from 'react-icons/ri';
+import robotGreetingLogo from '../../assests/RobotSaludando.svg';
 
 const rawBaseUrl = process.env.REACT_APP_CHATBOT_BASE_URL;
 const rawWebsiteSlug = process.env.REACT_APP_CHATBOT_WEBSITE_SLUG;
@@ -25,8 +25,15 @@ function getChatUrl() {
   }
 }
 
-function ChatIcon() {
-  return <RiRobot3Fill aria-hidden="true" size={28} />;
+function ChatIcon({ className }) {
+  return (
+    <img
+      src={robotGreetingLogo}
+      alt=""
+      aria-hidden="true"
+      className={className}
+    />
+  );
 }
 
 function CloseIcon() {
@@ -103,7 +110,7 @@ export default function ChatWidget() {
         <section
           ref={dialogRef}
           id="website-chatbot-dialog"
-          className={`absolute bottom-[76px] right-0 flex h-[600px] max-h-[calc(100vh-124px)] w-[390px] origin-bottom-right flex-col overflow-hidden rounded-[20px] border border-[#1f182c17] bg-white shadow-[0_22px_60px_rgba(0,0,0,0.28)] transition-[opacity,transform,visibility] duration-200 motion-reduce:transition-none max-[599px]:fixed max-[599px]:bottom-[84px] max-[599px]:left-3 max-[599px]:right-3 max-[599px]:top-3 max-[599px]:h-auto max-[599px]:max-h-none max-[599px]:w-auto max-[599px]:rounded-[18px] ${
+          className={`absolute bottom-[104px] right-0 flex h-[600px] max-h-[calc(100vh-152px)] w-[390px] origin-bottom-right flex-col overflow-hidden rounded-[20px] border border-[#1f182c17] bg-white shadow-[0_22px_60px_rgba(0,0,0,0.28)] transition-[opacity,transform,visibility] duration-200 motion-reduce:transition-none max-[599px]:fixed max-[599px]:bottom-[112px] max-[599px]:left-3 max-[599px]:right-3 max-[599px]:top-3 max-[599px]:h-auto max-[599px]:max-h-none max-[599px]:w-auto max-[599px]:rounded-[18px] ${
             isOpen
               ? 'visible translate-y-0 scale-100 opacity-100 pointer-events-auto'
               : 'invisible translate-y-4 scale-[0.97] opacity-0 pointer-events-none'
@@ -116,10 +123,10 @@ export default function ChatWidget() {
           <header className="flex min-h-[74px] items-center justify-between border-b border-[#eeeaf4] bg-white py-[13px] pl-4 pr-[14px]">
             <div className="flex items-center gap-[11px]">
               <span
-                className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-[#f0e7ff] text-[#7f36ec] [&_svg]:h-[22px] [&_svg]:w-[22px]"
+                className="flex h-[48px] w-[48px] items-center justify-center rounded-full bg-[#f0e7ff]"
                 aria-hidden="true"
               >
-                <ChatIcon />
+                <ChatIcon className="h-[40px] w-[40px] object-contain" />
               </span>
               <div>
                 <h2 className="mb-0.5 text-base font-semibold leading-tight text-[#17131f]">
@@ -185,9 +192,9 @@ export default function ChatWidget() {
         </section>
       )}
 
-      {!isOpen && (
+      {!hasOpened && (
         <div
-          className="pointer-events-none invisible absolute bottom-[76px] right-0 translate-y-1 whitespace-nowrap rounded-xl border border-[#e7dcf7] bg-white px-4 py-2.5 text-sm font-medium text-[#31283d] opacity-0 shadow-[0_8px_24px_rgba(38,22,58,0.2)] transition-[opacity,transform,visibility] duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 motion-reduce:transition-none after:absolute after:-bottom-1.5 after:right-6 after:h-3 after:w-3 after:rotate-45 after:border-b after:border-r after:border-[#e7dcf7] after:bg-white"
+          className="pointer-events-none visible absolute right-[calc(100%+16px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl border border-[#e7dcf7] bg-white px-4 py-2.5 text-sm font-medium text-[#31283d] opacity-100 shadow-[0_8px_24px_rgba(38,22,58,0.2)] transition-[opacity,transform,visibility] duration-150 motion-reduce:transition-none after:absolute after:-right-1.5 after:top-1/2 after:h-3 after:w-3 after:-translate-y-1/2 after:rotate-45 after:border-r after:border-t after:border-[#e7dcf7] after:bg-white"
           role="tooltip"
         >
           How can I help?
@@ -196,14 +203,26 @@ export default function ChatWidget() {
 
       <button
         ref={launcherRef}
-        className="ml-auto flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full border-0 bg-gradient-to-br from-[#8e49f5] to-[#6822d2] text-white shadow-[0_12px_30px_rgba(74,23,148,0.42)] transition-[transform,box-shadow] duration-150 hover:-translate-y-0.5 hover:shadow-[0_15px_34px_rgba(74,23,148,0.5)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#b79af3bf] motion-reduce:transition-none"
+        className="relative ml-auto flex h-[88px] w-[88px] cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-white transition-transform duration-150 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-[#b79af3bf] motion-reduce:transition-none"
         type="button"
         onClick={toggleWidget}
         aria-label={isOpen ? 'Close chatbot' : 'Open chatbot'}
         aria-expanded={isOpen}
         aria-controls="website-chatbot-dialog"
       >
-        {isOpen ? <CloseIcon /> : <ChatIcon />}
+        {!hasOpened && (
+          <span
+            className="pointer-events-none absolute right-2 -top-1 z-10 h-5 w-5 rounded-full border-[3px] border-white bg-[#28b76b] shadow-[0_0_0_4px_rgba(40,183,107,0.2)]"
+            aria-hidden="true"
+          />
+        )}
+        <span
+          className="pointer-events-none absolute -inset-2 rounded-full bg-[#8e49f5]/65 blur-md animate-pulse motion-reduce:animate-none"
+          aria-hidden="true"
+        />
+        <span className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-[#8e49f5] to-[#6822d2] shadow-[0_12px_30px_rgba(74,23,148,0.42)] transition-shadow duration-150 hover:shadow-[0_15px_34px_rgba(74,23,148,0.5)]">
+          {isOpen ? <CloseIcon /> : <ChatIcon className="h-[80px] w-[80px] scale-[1.2] object-contain" />}
+        </span>
       </button>
     </aside>
   );

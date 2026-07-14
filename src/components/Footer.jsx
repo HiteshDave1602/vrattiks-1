@@ -2,20 +2,37 @@ import React from 'react'
 import logo from '../assests/img/logo/logo.png'
 import { FiLinkedin, FiTwitter } from 'react-icons/fi'
 import { SlSocialFacebook } from 'react-icons/sl'
+import { SiOpenai } from 'react-icons/si'
+import AskChatGPTButton from './AskChatGPTButton'
 
 export default function Footer() {
   return (
     <footer className='py-16 text-white'>
       <div className='container mx-auto lg:px-20 px-7'>
-        <div className='md:grid grid-cols-3 gap-12'>
+        <div className='md:grid grid-cols-3 gap-12 flex flex-col'>
             <div className='md:text-left text-center mb-6 md:mb-0'>
             <div className='flex justify-center md:justify-start'>
                 <img src={logo} className='w-[26%] mb-6' alt='vrattiks logo' />
             </div>
             <p className='max-w-md mb-4'>At Vrattiks, we believe intelligence is the
               foundation of unstoppable growth — using AI to build a smarter, more efficient future together.</p>
-            <button className='text-left bg-[#070a13] border-white border rounded-md text-white px-3 py-1 font-urbanist text-sm'>
-              Talk to AI Expert</button>
+            <section className='mt-8 max-w-md text-left' aria-labelledby='ask-ai-about-title'>
+              <h2 id='ask-ai-about-title' className='text-2xl font-semibold leading-tight'>
+                Ask AI About<br />Vrattiks Intelligence
+              </h2>
+              <p className='mt-4 text-base leading-7 text-gray-400'>
+                Vrattiks Intelligence uses AI to help businesses build smarter systems, streamline operations, and grow with clarity and purpose.
+              </p>
+              <div className='mt-7'>
+                <AskChatGPTButton
+                  businessName='Vrattiks Intelligence'
+                  websiteUrl='https://www.vrattiks.io/'
+                  buttonText={<SiOpenai aria-hidden='true' />}
+                  wrapperClassName='w-auto max-w-none'
+                  buttonClassName='!inline-flex !h-14 !w-14 items-center justify-center !rounded-full border border-[#303030] bg-[#171717] !p-0 hover:bg-[#252525] hover:shadow-white/10 [&_svg]:h-7 [&_svg]:w-7'
+                />
+              </div>
+            </section>
 
           </div>
           <div className=' mb-7 md:mb-0 text-center'>
