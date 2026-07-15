@@ -3,19 +3,15 @@ import logo from '../assests/img/logo/logo.png'
 import { IoMenu } from 'react-icons/io5'
 import { Link } from 'react-router-dom'
 import { IoMdClose } from 'react-icons/io';
-import IntroductionSpeech from './IntroductionSpeech';
 
 export default function Header() {
     // modal open
     const [open, setOpen] = useState(false);
 
     const [menu, setMenu] = useState(false);
-    const websiteIntroText = "Hello and welcome to our website! We offer the best services for your needs.";
-
 
     return (
         <div>
-            {/* <IntroductionSpeech text={websiteIntroText} /> */}
 
             <header className='py-2 fixed top-0 left-0 w-full bg-black z-10'>
                 <div className='container mx-auto lg:px-20 px-7'>
