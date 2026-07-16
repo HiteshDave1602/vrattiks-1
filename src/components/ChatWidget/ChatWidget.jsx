@@ -178,7 +178,7 @@ export default function ChatWidget() {
               }`}
               src={chatUrl}
               title="Website chatbot"
-              allow="clipboard-write"
+              allow="microphone; clipboard-write"
               onLoad={() => {
                 setIsLoaded(true);
                 setHasLoadError(false);
